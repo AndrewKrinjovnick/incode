@@ -1,12 +1,16 @@
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
-import { AppRouter } from "./components";
+import { AppRouter, ErrorBoundary, MainHeader } from "./components";
+import "normalize.css";
 
 function App() {
   return (
-    <BrowserRouter>
-      <AppRouter />
-    </BrowserRouter>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <MainHeader />
+        <AppRouter />
+      </BrowserRouter>
+    </ErrorBoundary>
   );
 }
 
