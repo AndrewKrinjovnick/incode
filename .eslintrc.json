@@ -44,6 +44,7 @@
          "no-restricted-exports": 0,
          "import/no-unresolved": 0,
          "react/destructuring-assignment": 0,
-         "no-param-reassign": 0
+         "no-param-reassign": 0,
+         "react-hooks/exhaustive-deps": 0
     }
 }

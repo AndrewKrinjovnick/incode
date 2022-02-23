@@ -21,7 +21,7 @@ const AddCategoryButton: FC = () => {
   const dispatch = useAppDispatch();
 
   const addCategoryHandler = () => {
-    if (category.trim() && category.length < 13) {
+    if (category.trim() && category.length < 15) {
       dispatch(addCategory({ id: uuidv4(), label: category }));
       setCategory("");
     } else {

@@ -8,13 +8,17 @@ export interface ITransactionState {
 }
 
 const initCategoies = ["Other", "Salary", "Gifts"];
+const localCategories = localStorage.getItem("categories");
+const localTransactions = localStorage.getItem("transactions");
 
 const initialState: ITransactionState = {
-  allTransactions: [],
-  allCategories: initCategoies.map((category) => ({
-    id: uuidv4(),
-    label: category,
-  })),
+  allTransactions: localTransactions ? JSON.parse(localTransactions) : [],
+  allCategories: localCategories
+    ? JSON.parse(localCategories)
+    : initCategoies.map((category) => ({
+        id: uuidv4(),
+        label: category,
+      })),
 };
 
 const transactionsSlice = createSlice({

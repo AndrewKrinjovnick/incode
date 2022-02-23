@@ -35,6 +35,8 @@ const useStyles = makeStyles(() =>
   })
 );
 
+const date = new Date().toISOString().slice(0, 10);
+
 const TransactionForm: FC = () => {
   const classes = useStyles();
   const dispatch = useAppDispatch();
@@ -43,7 +45,7 @@ const TransactionForm: FC = () => {
   const [transaction, setTransaction] = useState<ITransaction>({
     id: "",
     label: "",
-    date: 0,
+    date,
     amount: 0,
     category: allCategories[0].label,
   });
@@ -72,15 +74,27 @@ const TransactionForm: FC = () => {
     }));
   };
 
+  const setDate = (evt: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = evt.target;
+    setTransaction((preState) => ({
+      ...preState,
+      date: value,
+    }));
+  };
+
   const setTransactionHandler = () => {
-    if (transaction.label.trim()) {
+    if (transaction.label.trim() && transaction.label.length < 20) {
       dispatch(addTransaction({ ...transaction, id: uuidv4() }));
       setTransaction((preState) => ({
         ...preState,
         id: "",
         label: "",
-        date: 0,
         amount: 0,
+      }));
+    } else {
+      setTransaction((preState) => ({
+        ...preState,
+        label: "",
       }));
     }
   };
@@ -103,6 +117,8 @@ const TransactionForm: FC = () => {
           InputLabelProps={{
             shrink: true,
           }}
+          value={transaction.date}
+          onChange={setDate}
         />
         <TextField
           variant="outlined"
