@@ -3,14 +3,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { IconButton, Typography } from "@mui/material";
 import { createStyles, makeStyles } from "@mui/styles";
 import { AddCategoryButton } from "..";
-
-const data = [
-  { label: "asdfasdf" },
-  { label: "vcb" },
-  { label: "cv" },
-  { label: "xcv" },
-  { label: "43 fgh" },
-];
+import { useAppDispatch, useAppSelector } from "../../hooks";
+import { removeCategory } from "../../store/reducers/transactionReducer";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -26,13 +20,25 @@ const useStyles = makeStyles(() =>
 
 const CategoryList: FC = () => {
   const classes = useStyles();
+  const categories = useAppSelector(
+    (state) => state.transactions.allCategories
+  );
+  const dispatch = useAppDispatch();
+  const deleteCategory = (id: string) => {
+    dispatch(removeCategory(id));
+  };
+
   return (
     <>
       <AddCategoryButton />
-      {data.map((category) => (
+      {categories.map((category, index) => (
         <div key={category.label} className={classes.container}>
           <Typography>{category.label}</Typography>
-          <IconButton aria-label="delete">
+          <IconButton
+            aria-label="delete"
+            onClick={() => deleteCategory(category.id)}
+            disabled={!index}
+          >
             <DeleteIcon />
           </IconButton>
         </div>

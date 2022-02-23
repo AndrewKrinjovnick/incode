@@ -4,6 +4,7 @@ import React from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { CategoryList, TransactionForm } from "../../components";
 import { columnsForTransactionTable } from "../../data/columns";
+import { useAppSelector } from "../../hooks";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -13,32 +14,10 @@ const useStyles = makeStyles(() =>
   })
 );
 
-const data = [
-  {
-    id: "1",
-    label: "asdfasdf",
-    date: 12342134,
-    amount: 634,
-    category: "sdfsaf",
-  },
-  {
-    id: "2",
-    label: "cbvxcb",
-    date: 12342134,
-    amount: 634,
-    category: "sdfsaf",
-  },
-  {
-    id: "3",
-    label: "dfbdfg",
-    date: 12342134,
-    amount: 634,
-    category: "sdfsaf",
-  },
-];
-
 const Home = () => {
   const classes = useStyles();
+  const { allTransactions } = useAppSelector((state) => state.transactions);
+
   return (
     <main className={classes.container}>
       <Container>
@@ -49,8 +28,9 @@ const Home = () => {
           <Grid item xs={10}>
             <TransactionForm />
             <DataGrid
-              rows={data}
+              rows={allTransactions}
               columns={columnsForTransactionTable}
+              disableExtendRowFullWidth={false}
               pageSize={5}
               rowsPerPageOptions={[5]}
             />

@@ -6,9 +6,14 @@ import {
   Typography,
   Select,
   MenuItem,
+  SelectChangeEvent,
 } from "@mui/material";
+import { v4 as uuidv4 } from "uuid";
 import { Box } from "@mui/system";
 import { createStyles, makeStyles } from "@mui/styles";
+import { ITransaction } from "../../types";
+import { useAppDispatch, useAppSelector } from "../../hooks";
+import { addTransaction } from "../../store/reducers/transactionReducer";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -21,18 +26,63 @@ const useStyles = makeStyles(() =>
       width: "100%",
       padding: "5px 0 10px",
     },
+    select: {
+      width: "150px",
+    },
+    btn: {
+      width: "100px",
+    },
   })
 );
 
-const data = [{ label: "234" }, { label: "vbc" }, { label: "fghf" }];
-
 const TransactionForm: FC = () => {
   const classes = useStyles();
-  const [label, setLabel] = useState<string>("");
+  const dispatch = useAppDispatch();
+  const { allCategories } = useAppSelector((state) => state.transactions);
 
-  const setLabelHandler = (evt: React.ChangeEvent<HTMLInputElement>) => {
+  const [transaction, setTransaction] = useState<ITransaction>({
+    id: "",
+    label: "",
+    date: 0,
+    amount: 0,
+    category: allCategories[0].label,
+  });
+
+  const setLabel = (evt: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = evt.target;
-    setLabel(value);
+    setTransaction((preState) => ({
+      ...preState,
+      label: value,
+    }));
+  };
+
+  const setAmount = (evt: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = evt.target;
+    setTransaction((preState) => ({
+      ...preState,
+      amount: +value,
+    }));
+  };
+
+  const setCategory = (evt: SelectChangeEvent) => {
+    const { value } = evt.target;
+    setTransaction((preState) => ({
+      ...preState,
+      category: value,
+    }));
+  };
+
+  const setTransactionHandler = () => {
+    if (transaction.label.trim()) {
+      dispatch(addTransaction({ ...transaction, id: uuidv4() }));
+      setTransaction((preState) => ({
+        ...preState,
+        id: "",
+        label: "",
+        date: 0,
+        amount: 0,
+      }));
+    }
   };
 
   return (
@@ -44,8 +94,8 @@ const TransactionForm: FC = () => {
         <TextField
           label="Label"
           variant="outlined"
-          value={label}
-          onChange={setLabelHandler}
+          value={transaction.label}
+          onChange={setLabel}
         />
         <TextField
           label="Date"
@@ -54,15 +104,30 @@ const TransactionForm: FC = () => {
             shrink: true,
           }}
         />
-        <TextField variant="outlined" type="number" defaultValue={0} />
-        <Select label={data[0].label}>
-          {data.map((item) => (
+        <TextField
+          variant="outlined"
+          type="number"
+          value={transaction.amount}
+          onChange={setAmount}
+        />
+        <Select
+          value={transaction.category}
+          onChange={setCategory}
+          className={classes.select}
+        >
+          {allCategories.map((item) => (
             <MenuItem value={item.label} key={item.label}>
               {item.label}
             </MenuItem>
           ))}
         </Select>
-        <Button variant="contained">Add category</Button>
+        <Button
+          variant="contained"
+          onClick={setTransactionHandler}
+          className={classes.btn}
+        >
+          Add
+        </Button>
       </Box>
     </FormControl>
   );

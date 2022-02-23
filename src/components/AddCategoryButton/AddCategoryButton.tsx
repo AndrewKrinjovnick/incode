@@ -2,6 +2,9 @@ import React, { FC, useState } from "react";
 import { Button, TextField, Typography } from "@mui/material";
 import { createStyles, makeStyles } from "@mui/styles";
 import { Box } from "@mui/system";
+import { v4 as uuidv4 } from "uuid";
+import { useAppDispatch } from "../../hooks";
+import { addCategory } from "../../store/reducers/transactionReducer";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -15,6 +18,16 @@ const useStyles = makeStyles(() =>
 const AddCategoryButton: FC = () => {
   const classes = useStyles();
   const [category, setCategory] = useState<string>("");
+  const dispatch = useAppDispatch();
+
+  const addCategoryHandler = () => {
+    if (category.trim() && category.length < 13) {
+      dispatch(addCategory({ id: uuidv4(), label: category }));
+      setCategory("");
+    } else {
+      setCategory("");
+    }
+  };
 
   const setСategoryName = (evt: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = evt.target;
@@ -33,7 +46,7 @@ const AddCategoryButton: FC = () => {
         value={category}
         onChange={setСategoryName}
       />
-      <Button variant="contained" fullWidth>
+      <Button variant="contained" fullWidth onClick={addCategoryHandler}>
         Add category
       </Button>
     </Box>
