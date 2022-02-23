@@ -1,2 +1,2 @@
-export { default as Home } from "./Home/Home";
-export { default as Graph } from "./Graph/Graph";
+export { default as HomePage } from "./HomePage/HomePage";
+export { default as GraphPage } from "./GraphPage/GraphPage";

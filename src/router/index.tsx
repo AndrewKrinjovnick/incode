@@ -1,7 +1,7 @@
 import React from "react";
-import { Graph, Home } from "../pages";
+import { GraphPage, HomePage } from "../pages";
 
 export const publicRoute = [
-  { path: "/", element: <Home /> },
-  { path: "/graph", element: <Graph /> },
+  { path: "/", element: <HomePage /> },
+  { path: "/graph", element: <GraphPage /> },
 ];
