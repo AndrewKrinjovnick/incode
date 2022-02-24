@@ -5,7 +5,7 @@ import Graph from "../../components/Graph/Graph";
 const GraphPage = () => {
   return (
     <Container>
-      <Typography variant="h3" align="center" sx={{ margin: "10px" }}>
+      <Typography variant="h4" align="center" sx={{ margin: "10px" }}>
         Analitics
       </Typography>
       <Graph />

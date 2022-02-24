@@ -82,7 +82,7 @@ const TransactionForm: FC = () => {
     }));
   };
 
-  const setTransactionHandler = () => {
+  const addNewTransaction = () => {
     if (transaction.label.trim() && transaction.label.length < 20) {
       dispatch(addTransaction({ ...transaction, id: uuidv4() }));
       setTransaction((preState) => ({
@@ -139,7 +139,7 @@ const TransactionForm: FC = () => {
         </Select>
         <Button
           variant="contained"
-          onClick={setTransactionHandler}
+          onClick={addNewTransaction}
           className={classes.btn}
         >
           Add
