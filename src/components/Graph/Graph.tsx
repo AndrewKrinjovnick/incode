@@ -1,6 +1,7 @@
 import React, { FC, useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import { Chart, registerables } from "chart.js";
+import { Typography } from "@mui/material";
 import { useAppSelector } from "../../hooks";
 import { randColor } from "../../utils";
 
@@ -42,7 +43,7 @@ const Graph: FC = () => {
   }, [allTransactions]);
 
   if (!allTransactions.length) {
-    return null;
+    return <Typography variant="h5">No data</Typography>;
   }
 
   return (
@@ -53,6 +54,8 @@ const Graph: FC = () => {
           {
             data: amounts,
             backgroundColor: colors,
+            barPercentage: 1,
+            categoryPercentage: 0.3,
           },
         ],
       }}

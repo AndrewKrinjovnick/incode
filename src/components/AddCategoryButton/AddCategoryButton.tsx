@@ -34,6 +34,12 @@ const AddCategoryButton: FC = () => {
     setCategory(value);
   };
 
+  const enterCategory = (evt: React.KeyboardEvent<HTMLInputElement>) => {
+    if (evt.key === "Enter") {
+      addCategoryHandler();
+    }
+  };
+
   return (
     <Box>
       <Typography variant="h6" component="h6">
@@ -45,6 +51,7 @@ const AddCategoryButton: FC = () => {
         className={classes.categoryInput}
         value={category}
         onChange={setСategoryName}
+        onKeyDown={enterCategory}
       />
       <Button variant="contained" fullWidth onClick={addCategoryHandler}>
         Add category

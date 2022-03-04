@@ -41,7 +41,6 @@ const HomePage = () => {
               className={classes.table}
               rows={allTransactions}
               columns={columnsForTransactionTable}
-              disableExtendRowFullWidth={false}
               pageSize={5}
               rowsPerPageOptions={[5]}
             />

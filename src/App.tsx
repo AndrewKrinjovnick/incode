@@ -1,8 +1,8 @@
+import { CssBaseline } from "@mui/material";
 import React from "react";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 import { AppRouter, ErrorBoundary, MainHeader } from "./components";
-import "normalize.css";
 import { store } from "./store";
 
 function App() {
@@ -10,6 +10,7 @@ function App() {
     <ErrorBoundary>
       <Provider store={store}>
         <BrowserRouter>
+          <CssBaseline />
           <MainHeader />
           <AppRouter />
         </BrowserRouter>

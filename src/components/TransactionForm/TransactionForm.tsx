@@ -4,9 +4,7 @@ import {
   FormControl,
   TextField,
   Typography,
-  Select,
   MenuItem,
-  SelectChangeEvent,
 } from "@mui/material";
 import { v4 as uuidv4 } from "uuid";
 import { Box } from "@mui/system";
@@ -36,6 +34,12 @@ const useStyles = makeStyles(() =>
 );
 
 const date = new Date().toISOString().slice(0, 10);
+const defaultState = {
+  id: "",
+  label: "",
+  date,
+  amount: 0,
+};
 
 const TransactionForm: FC = () => {
   const classes = useStyles();
@@ -43,15 +47,27 @@ const TransactionForm: FC = () => {
   const { allCategories } = useAppSelector((state) => state.transactions);
 
   const [transaction, setTransaction] = useState<ITransaction>({
-    id: "",
-    label: "",
-    date,
-    amount: 0,
+    ...defaultState,
     category: allCategories[0].label,
   });
 
+  const addNewTransaction = () => {
+    if (transaction.label.trim() && transaction.label.length < 20) {
+      dispatch(addTransaction({ ...transaction, id: uuidv4() }));
+      setTransaction({
+        ...defaultState,
+        category: allCategories[0].label,
+      });
+    } else {
+      setTransaction((preState) => ({
+        ...preState,
+        label: "",
+      }));
+    }
+  };
+
   const setLabel = (evt: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = evt.target;
+    const { value } = evt.target as HTMLInputElement;
     setTransaction((preState) => ({
       ...preState,
       label: value,
@@ -66,7 +82,7 @@ const TransactionForm: FC = () => {
     }));
   };
 
-  const setCategory = (evt: SelectChangeEvent) => {
+  const setCategory = (evt: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = evt.target;
     setTransaction((preState) => ({
       ...preState,
@@ -82,20 +98,9 @@ const TransactionForm: FC = () => {
     }));
   };
 
-  const addNewTransaction = () => {
-    if (transaction.label.trim() && transaction.label.length < 20) {
-      dispatch(addTransaction({ ...transaction, id: uuidv4() }));
-      setTransaction((preState) => ({
-        ...preState,
-        id: "",
-        label: "",
-        amount: 0,
-      }));
-    } else {
-      setTransaction((preState) => ({
-        ...preState,
-        label: "",
-      }));
+  const enterTransaction = (evt: React.KeyboardEvent<HTMLInputElement>) => {
+    if (evt.key === "Enter") {
+      addNewTransaction();
     }
   };
 
@@ -110,6 +115,7 @@ const TransactionForm: FC = () => {
           variant="outlined"
           value={transaction.label}
           onChange={setLabel}
+          onKeyDown={enterTransaction}
         />
         <TextField
           label="Date"
@@ -122,11 +128,15 @@ const TransactionForm: FC = () => {
         />
         <TextField
           variant="outlined"
-          type="number"
+          label="Amount"
+          type="text"
+          inputProps={{ inputMode: "numeric", pattern: /^-?\d+\.?\d*$/ }}
           value={transaction.amount}
           onChange={setAmount}
         />
-        <Select
+        <TextField
+          label="Category"
+          select
           value={transaction.category}
           onChange={setCategory}
           className={classes.select}
@@ -136,7 +146,7 @@ const TransactionForm: FC = () => {
               {item.label}
             </MenuItem>
           ))}
-        </Select>
+        </TextField>
         <Button
           variant="contained"
           onClick={addNewTransaction}
