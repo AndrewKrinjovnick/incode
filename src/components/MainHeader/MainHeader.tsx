@@ -36,7 +36,7 @@ const useStyles = makeStyles(() =>
   })
 );
 
-const MainHeader: FC = () => {
+export const MainHeader: FC = () => {
   const classes = useStyles();
   return (
     <AppBar position="static" className={classes.container}>
@@ -64,5 +64,3 @@ const MainHeader: FC = () => {
     </AppBar>
   );
 };
-
-export default MainHeader;

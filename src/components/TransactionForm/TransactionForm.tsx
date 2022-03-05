@@ -1,17 +1,11 @@
 import React, { FC, useState } from "react";
-import {
-  Button,
-  FormControl,
-  TextField,
-  Typography,
-  MenuItem,
-} from "@mui/material";
+import { Button, TextField, Typography, MenuItem } from "@mui/material";
 import { v4 as uuidv4 } from "uuid";
 import { Box } from "@mui/system";
 import { createStyles, makeStyles } from "@mui/styles";
 import { ITransaction } from "../../types";
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import { addTransaction } from "../../store/reducers/transactionReducer";
+import { addTransaction } from "../../store/slices/transactionSlice";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -41,17 +35,18 @@ const defaultState = {
   amount: "",
 };
 
-const TransactionForm: FC = () => {
+export const TransactionForm: FC = () => {
   const classes = useStyles();
   const dispatch = useAppDispatch();
-  const { allCategories } = useAppSelector((state) => state.transactions);
+  const { allCategories } = useAppSelector((state) => state.categories);
 
   const [transaction, setTransaction] = useState<ITransaction>({
     ...defaultState,
     category: allCategories[0].label,
   });
 
-  const addNewTransaction = () => {
+  const addNewTransaction = (event) => {
+    event.preventDefault();
     if (transaction.label.trim() && transaction.label.length < 20) {
       dispatch(
         addTransaction({
@@ -72,55 +67,37 @@ const TransactionForm: FC = () => {
     }
   };
 
-  const setLabel = (evt: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = evt.target as HTMLInputElement;
-    setTransaction((preState) => ({
-      ...preState,
-      label: value,
-    }));
-  };
-
-  const setAmount = (evt: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = evt.target;
-    if (/^[+-]?((\.\d*)|(\d*(\.\d*)?))$/.test(value)) {
-      if (!+value[0] && +value.slice(1)) {
+  const setValue = (field: string) => (event) => {
+    if (field === "amount") {
+      const { value } = event.target;
+      if (/^[+-]?((\.\d*)|(\d*(\.\d*)?))$/.test(value)) {
+        if (!+value[0] && +value.slice(1)) {
+          setTransaction((preState) => ({
+            ...preState,
+            [field]: +value,
+          }));
+          return;
+        }
         setTransaction((preState) => ({
           ...preState,
-          amount: +value,
+          [field]: value,
         }));
-        return;
       }
-      setTransaction((preState) => ({
-        ...preState,
-        amount: value,
-      }));
+      return;
     }
-  };
-
-  const setCategory = (evt: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = evt.target;
-    setTransaction((preState) => ({
-      ...preState,
-      category: value,
+    setTransaction((prevState) => ({
+      ...prevState,
+      [field]: event.target.value,
     }));
   };
 
-  const setDate = (evt: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = evt.target;
-    setTransaction((preState) => ({
-      ...preState,
-      date: value,
-    }));
-  };
-
-  const enterTransaction = (evt: React.KeyboardEvent<HTMLInputElement>) => {
-    if (evt.key === "Enter") {
-      addNewTransaction();
-    }
-  };
+  const setLabel = setValue("label");
+  const setCategory = setValue("category");
+  const setDate = setValue("date");
+  const setAmount = setValue("amount");
 
   return (
-    <FormControl className={classes.formWrapper}>
+    <form className={classes.formWrapper} onSubmit={addNewTransaction}>
       <Typography variant="h6" component="h6">
         New transaction
       </Typography>
@@ -130,7 +107,6 @@ const TransactionForm: FC = () => {
           variant="outlined"
           value={transaction.label}
           onChange={setLabel}
-          onKeyDown={enterTransaction}
         />
         <TextField
           label="Date"
@@ -151,7 +127,6 @@ const TransactionForm: FC = () => {
           }}
           value={transaction.amount}
           onChange={setAmount}
-          onKeyDown={enterTransaction}
         />
         <TextField
           label="Category"
@@ -166,16 +141,10 @@ const TransactionForm: FC = () => {
             </MenuItem>
           ))}
         </TextField>
-        <Button
-          variant="contained"
-          onClick={addNewTransaction}
-          className={classes.btn}
-        >
+        <Button variant="contained" type="submit" className={classes.btn}>
           Add
         </Button>
       </Box>
-    </FormControl>
+    </form>
   );
 };
-
-export default TransactionForm;

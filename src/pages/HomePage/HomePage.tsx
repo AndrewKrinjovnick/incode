@@ -1,32 +1,20 @@
+import React from "react";
 import { Container, Grid } from "@mui/material";
 import { createStyles, makeStyles } from "@mui/styles";
-import React, { useEffect } from "react";
-import { DataGrid } from "@mui/x-data-grid";
-import { CategoryList, TransactionForm } from "../../components";
-import { columnsForTransactionTable } from "../../data/columns";
-import { useAppSelector } from "../../hooks";
+import { CategoryList } from "../../components/CategoryList/CategoryList";
+import { TransactionForm } from "../../components/TransactionForm/TransactionForm";
+import { TransactionTable } from "../../components/TransactionTable/TransactionTable";
 
-const useStyles = makeStyles(() =>
+export const useStyles = makeStyles(() =>
   createStyles({
     container: {
       padding: "20px 0 20px",
     },
-    table: {
-      height: "400px!important",
-    },
   })
 );
 
-const HomePage = () => {
+export const HomePage = () => {
   const classes = useStyles();
-  const { allTransactions, allCategories } = useAppSelector(
-    (state) => state.transactions
-  );
-
-  useEffect(() => {
-    localStorage.setItem("transactions", JSON.stringify(allTransactions));
-    localStorage.setItem("categories", JSON.stringify(allCategories));
-  }, [allTransactions, allCategories]);
 
   return (
     <main className={classes.container}>
@@ -37,18 +25,10 @@ const HomePage = () => {
           </Grid>
           <Grid item xs={10}>
             <TransactionForm />
-            <DataGrid
-              className={classes.table}
-              rows={allTransactions}
-              columns={columnsForTransactionTable}
-              pageSize={5}
-              rowsPerPageOptions={[5]}
-            />
+            <TransactionTable />
           </Grid>
         </Grid>
       </Container>
     </main>
   );
 };
-
-export default HomePage;

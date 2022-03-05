@@ -2,7 +2,7 @@ import React, { FC } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { publicRoute } from "../../router";
 
-const AppRouter: FC = () => {
+export const AppRouter: FC = () => {
   return (
     <Routes>
       {publicRoute.map((route) => (
@@ -12,5 +12,3 @@ const AppRouter: FC = () => {
     </Routes>
   );
 };
-
-export default AppRouter;

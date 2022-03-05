@@ -1,10 +1,9 @@
 import React, { FC, useState } from "react";
 import { Button, TextField, Typography } from "@mui/material";
 import { createStyles, makeStyles } from "@mui/styles";
-import { Box } from "@mui/system";
 import { v4 as uuidv4 } from "uuid";
 import { useAppDispatch } from "../../hooks";
-import { addCategory } from "../../store/reducers/transactionReducer";
+import { addCategory } from "../../store/slices/categorySlice";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -15,12 +14,13 @@ const useStyles = makeStyles(() =>
   })
 );
 
-const AddCategoryButton: FC = () => {
+export const AddCategoryForm: FC = () => {
   const classes = useStyles();
   const [category, setCategory] = useState<string>("");
   const dispatch = useAppDispatch();
 
-  const addCategoryHandler = () => {
+  const addCategoryHandler = (event) => {
+    event.preventDefault();
     if (category.trim() && category.length < 15) {
       dispatch(addCategory({ id: uuidv4(), label: category }));
       setCategory("");
@@ -34,14 +34,8 @@ const AddCategoryButton: FC = () => {
     setCategory(value);
   };
 
-  const enterCategory = (evt: React.KeyboardEvent<HTMLInputElement>) => {
-    if (evt.key === "Enter") {
-      addCategoryHandler();
-    }
-  };
-
   return (
-    <Box>
+    <form onSubmit={addCategoryHandler}>
       <Typography variant="h6" component="h6">
         Categories
       </Typography>
@@ -51,13 +45,10 @@ const AddCategoryButton: FC = () => {
         className={classes.categoryInput}
         value={category}
         onChange={setСategoryName}
-        onKeyDown={enterCategory}
       />
-      <Button variant="contained" fullWidth onClick={addCategoryHandler}>
+      <Button variant="contained" fullWidth type="submit">
         Add category
       </Button>
-    </Box>
+    </form>
   );
 };
-
-export default AddCategoryButton;

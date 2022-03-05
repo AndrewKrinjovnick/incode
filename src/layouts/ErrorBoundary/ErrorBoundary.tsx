@@ -1,7 +1,10 @@
 import { Container, Typography } from "@mui/material";
 import React from "react";
 
-class ErrorBoundary extends React.Component<unknown, { hasError: boolean }> {
+export class ErrorBoundary extends React.Component<
+  unknown,
+  { hasError: boolean }
+> {
   constructor(props: unknown) {
     super(props);
     this.state = { hasError: false };
@@ -36,5 +39,3 @@ class ErrorBoundary extends React.Component<unknown, { hasError: boolean }> {
     return this.props.children;
   }
 }
-
-export default ErrorBoundary;

@@ -2,11 +2,11 @@ import React, { FC } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { IconButton, Typography } from "@mui/material";
 import { createStyles, makeStyles } from "@mui/styles";
-import { AddCategoryButton } from "..";
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import { removeCategory } from "../../store/reducers/transactionReducer";
+import { AddCategoryForm } from "../AddCategoryForm/AddCategoryForm";
+import { removeCategory } from "../../store/slices/categorySlice";
 
-const useStyles = makeStyles(() =>
+export const useStyles = makeStyles(() =>
   createStyles({
     container: {
       display: "flex",
@@ -18,11 +18,9 @@ const useStyles = makeStyles(() =>
   })
 );
 
-const CategoryList: FC = () => {
+export const CategoryList: FC = () => {
   const classes = useStyles();
-  const categories = useAppSelector(
-    (state) => state.transactions.allCategories
-  );
+  const { allCategories } = useAppSelector((state) => state.categories);
   const dispatch = useAppDispatch();
   const deleteCategory = (id: string) => {
     dispatch(removeCategory(id));
@@ -30,8 +28,8 @@ const CategoryList: FC = () => {
 
   return (
     <>
-      <AddCategoryButton />
-      {categories.map((category, index) => (
+      <AddCategoryForm />
+      {allCategories.map((category, index) => (
         <div key={category.label} className={classes.container}>
           <Typography>{category.label}</Typography>
           <IconButton
@@ -46,5 +44,3 @@ const CategoryList: FC = () => {
     </>
   );
 };
-
-export default CategoryList;

@@ -1,10 +1,12 @@
+export type ID = string;
+
 export interface ICategory {
-  id: string;
+  id: ID;
   label: string;
 }
 
 export interface ITransaction {
-  id: string;
+  id: ID;
   label: string;
   date: string;
   amount: number | string;

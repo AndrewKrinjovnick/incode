@@ -11,7 +11,7 @@ interface IObjCategories {
   [key: string]: number;
 }
 
-const Graph: FC = () => {
+export const Graph: FC = () => {
   const { allTransactions } = useAppSelector((state) => state.transactions);
   const [amounts, setAmounst] = useState<number[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
@@ -73,5 +73,3 @@ const Graph: FC = () => {
     />
   );
 };
-
-export default Graph;
