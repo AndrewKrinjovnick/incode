@@ -25,9 +25,9 @@ const Graph: FC = () => {
 
     allTransactions.forEach((transaction) => {
       if (objCategories[transaction.category]) {
-        objCategories[transaction.category] += transaction.amount;
+        objCategories[transaction.category] += transaction.amount as number;
       } else {
-        objCategories[transaction.category] = transaction.amount;
+        objCategories[transaction.category] = transaction.amount as number;
       }
     });
 
