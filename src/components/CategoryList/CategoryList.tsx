@@ -1,46 +1,44 @@
-import React, { FC } from "react";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { IconButton, Typography } from "@mui/material";
-import { createStyles, makeStyles } from "@mui/styles";
-import { useAppDispatch, useAppSelector } from "../../hooks";
+import React, { FC, useState, useEffect } from "react";
 import { AddCategoryForm } from "../AddCategoryForm/AddCategoryForm";
-import { removeCategory } from "../../store/slices/categorySlice";
-
-export const useStyles = makeStyles(() =>
-  createStyles({
-    container: {
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      width: "100%",
-      padding: "10px 10px 0",
-    },
-  })
-);
+import { Category } from "../Category/Category";
+import { useAppSelector } from "../../hooks";
+import { EditCategoryForm } from "../EditCategoryForm/EditCategoryForm";
 
 export const CategoryList: FC = () => {
-  const classes = useStyles();
+  const [initState, setInitState] = useState({});
   const { allCategories } = useAppSelector((state) => state.categories);
-  const dispatch = useAppDispatch();
-  const deleteCategory = (id: string) => {
-    dispatch(removeCategory(id));
-  };
+  const [isCategoryOpen, setIsCategoryOpen] = useState({});
+
+  useEffect(() => {
+    const obj = {};
+    allCategories.forEach((category) => {
+      obj[category.id] = true;
+    });
+    setInitState(obj);
+    setIsCategoryOpen(obj);
+  }, [allCategories]);
 
   return (
     <>
       <AddCategoryForm />
-      {allCategories.map((category, index) => (
-        <div key={category.label} className={classes.container}>
-          <Typography>{category.label}</Typography>
-          <IconButton
-            aria-label="delete"
-            onClick={() => deleteCategory(category.id)}
-            disabled={!index}
-          >
-            <DeleteIcon />
-          </IconButton>
-        </div>
-      ))}
+      {allCategories.map((category, index) =>
+        isCategoryOpen[category.id] ? (
+          <Category
+            key={category.label}
+            category={category}
+            index={index}
+            openEditForm={(state) => setIsCategoryOpen(state)}
+            defaultOpenValue={initState}
+          />
+        ) : (
+          <EditCategoryForm
+            key={category.label}
+            category={category}
+            closeEditForm={(state) => setIsCategoryOpen(state)}
+            defaultOpenValue={initState}
+          />
+        )
+      )}
     </>
   );
 };

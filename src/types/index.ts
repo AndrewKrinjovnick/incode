@@ -1,8 +1,9 @@
 export type ID = string;
+export type nameOfCategory = string;
 
 export interface ICategory {
   id: ID;
-  label: string;
+  label: nameOfCategory;
 }
 
 export interface ITransaction {

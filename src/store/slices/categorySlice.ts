@@ -27,9 +27,21 @@ const categorySlice = createSlice({
         (category) => category.id !== action.payload
       );
     },
+    updateCategory(state, action: PayloadAction<ICategory>) {
+      state.allCategories = state.allCategories.map((category) => {
+        if (category.id === action.payload.id) {
+          return {
+            ...category,
+            label: action.payload.label,
+          };
+        }
+        return category;
+      });
+    },
   },
 });
 
-export const { addCategory, removeCategory } = categorySlice.actions;
+export const { addCategory, removeCategory, updateCategory } =
+  categorySlice.actions;
 
 export const categoryReducer = categorySlice.reducer;

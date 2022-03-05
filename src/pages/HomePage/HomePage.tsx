@@ -20,10 +20,10 @@ export const HomePage = () => {
     <main className={classes.container}>
       <Container>
         <Grid container spacing={2}>
-          <Grid item xs={2}>
+          <Grid item xs={2.5}>
             <CategoryList />
           </Grid>
-          <Grid item xs={10}>
+          <Grid item xs={9.5}>
             <TransactionForm />
             <TransactionTable />
           </Grid>
