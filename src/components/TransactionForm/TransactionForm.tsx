@@ -38,7 +38,7 @@ const defaultState = {
   id: "",
   label: "",
   date,
-  amount: 0,
+  amount: "",
 };
 
 const TransactionForm: FC = () => {
@@ -53,7 +53,13 @@ const TransactionForm: FC = () => {
 
   const addNewTransaction = () => {
     if (transaction.label.trim() && transaction.label.length < 20) {
-      dispatch(addTransaction({ ...transaction, id: uuidv4() }));
+      dispatch(
+        addTransaction({
+          ...transaction,
+          amount: +transaction.amount,
+          id: uuidv4(),
+        })
+      );
       setTransaction({
         ...defaultState,
         category: allCategories[0].label,
@@ -76,10 +82,19 @@ const TransactionForm: FC = () => {
 
   const setAmount = (evt: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = evt.target;
-    setTransaction((preState) => ({
-      ...preState,
-      amount: +value,
-    }));
+    if (/^[+-]?((\.\d*)|(\d*(\.\d*)?))$/.test(value)) {
+      if (!+value[0] && +value.slice(1)) {
+        setTransaction((preState) => ({
+          ...preState,
+          amount: +value,
+        }));
+        return;
+      }
+      setTransaction((preState) => ({
+        ...preState,
+        amount: value,
+      }));
+    }
   };
 
   const setCategory = (evt: React.ChangeEvent<HTMLInputElement>) => {
@@ -130,9 +145,13 @@ const TransactionForm: FC = () => {
           variant="outlined"
           label="Amount"
           type="text"
-          inputProps={{ inputMode: "numeric", pattern: /^-?\d+\.?\d*$/ }}
+          placeholder="0"
+          inputProps={{
+            inputMode: "numeric",
+          }}
           value={transaction.amount}
           onChange={setAmount}
+          onKeyDown={enterTransaction}
         />
         <TextField
           label="Category"
