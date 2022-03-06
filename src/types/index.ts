@@ -11,5 +11,6 @@ export interface ITransaction {
   label: string;
   date: string;
   amount: number | string;
+  archived: boolean;
   category: string;
 }

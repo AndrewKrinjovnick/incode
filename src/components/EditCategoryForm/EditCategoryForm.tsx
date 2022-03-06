@@ -17,6 +17,11 @@ const useStyles = makeStyles(() =>
     container: {
       display: "flex",
       justifyContent: "space-between",
+      height: "50px",
+      padding: "10px 0",
+    },
+    btn: {
+      height: "40px",
     },
   })
 );
@@ -56,10 +61,12 @@ export const EditCategoryForm: FC<IEditCategoryForm> = ({
       <TextField
         label="Label"
         variant="outlined"
+        size="small"
         value={categoryLabel}
         onChange={setСategoryName}
+        autoFocus
       />
-      <Button variant="contained" type="submit">
+      <Button className={classes.btn} variant="contained" type="submit">
         Edit
       </Button>
     </form>

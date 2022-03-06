@@ -31,6 +31,7 @@ const date = new Date().toISOString().slice(0, 10);
 const defaultState = {
   id: "",
   label: "",
+  archived: false,
   date,
   amount: "",
 };
