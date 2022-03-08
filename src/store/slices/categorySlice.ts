@@ -2,17 +2,30 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { v4 as uuidv4 } from "uuid";
 import { ICategory, ID } from "../../types";
 
+export interface ICategoriesByID {
+  [id: ID]: ICategory;
+}
+
 export interface ITransactionState {
   allCategories: ICategory[];
+  categoriesByID: ICategoriesByID;
 }
 
 const initCategoies = ["Other", "Salary", "Gifts"];
 
+const categoriesByID: ICategoriesByID = {};
+
 const initialState: ITransactionState = {
-  allCategories: initCategoies.map((category) => ({
-    id: uuidv4(),
-    label: category,
-  })),
+  allCategories: initCategoies.map((category) => {
+    const ID = uuidv4();
+    const newCategory = {
+      id: ID,
+      label: category,
+    };
+    categoriesByID[ID] = newCategory;
+    return newCategory;
+  }),
+  categoriesByID,
 };
 
 const categorySlice = createSlice({
@@ -21,6 +34,7 @@ const categorySlice = createSlice({
   reducers: {
     addCategory(state, action: PayloadAction<ICategory>) {
       state.allCategories.push(action.payload);
+      state.categoriesByID[action.payload.id] = action.payload;
     },
     removeCategory(state, action: PayloadAction<ID>) {
       state.allCategories = state.allCategories.filter(
@@ -30,13 +44,11 @@ const categorySlice = createSlice({
     updateCategory(state, action: PayloadAction<ICategory>) {
       state.allCategories = state.allCategories.map((category) => {
         if (category.id === action.payload.id) {
-          return {
-            ...category,
-            label: action.payload.label,
-          };
+          return action.payload;
         }
         return category;
       });
+      state.categoriesByID[action.payload.id] = action.payload;
     },
   },
 });

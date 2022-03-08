@@ -13,6 +13,7 @@ interface IObjCategories {
 
 export const Graph: FC = () => {
   const { allTransactions } = useAppSelector((state) => state.transactions);
+  const { categoriesByID } = useAppSelector((state) => state.categories);
   const [amounts, setAmounst] = useState<number[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [colors, setColors] = useState<string[]>([]);
@@ -24,10 +25,11 @@ export const Graph: FC = () => {
     const arrColors = [];
 
     allTransactions.forEach((transaction) => {
-      if (objCategories[transaction.category]) {
-        objCategories[transaction.category] += transaction.amount as number;
+      const { label } = categoriesByID[transaction.category];
+      if (objCategories[label]) {
+        objCategories[label] += transaction.amount as number;
       } else {
-        objCategories[transaction.category] = transaction.amount as number;
+        objCategories[label] = transaction.amount as number;
       }
     });
 

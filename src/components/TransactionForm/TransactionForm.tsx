@@ -1,6 +1,6 @@
 import React, { FC, useState } from "react";
 import { Button, TextField, Typography, MenuItem } from "@mui/material";
-import { v4 as uuidv4 } from "uuid";
+import { v4 as generateID } from "uuid";
 import { Box } from "@mui/system";
 import { createStyles, makeStyles } from "@mui/styles";
 import { ITransaction } from "../../types";
@@ -43,22 +43,22 @@ export const TransactionForm: FC = () => {
 
   const [transaction, setTransaction] = useState<ITransaction>({
     ...defaultState,
-    category: allCategories[0].label,
+    category: allCategories[0].id,
   });
 
-  const addNewTransaction = (event) => {
+  const addNewTransaction = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (transaction.label.trim() && transaction.label.length < 20) {
       dispatch(
         addTransaction({
           ...transaction,
           amount: !+transaction.amount ? 0 : +transaction.amount,
-          id: uuidv4(),
+          id: generateID(),
         })
       );
       setTransaction({
         ...defaultState,
-        category: allCategories[0].label,
+        category: allCategories[0].id,
       });
     } else {
       setTransaction((preState) => ({
@@ -68,29 +68,30 @@ export const TransactionForm: FC = () => {
     }
   };
 
-  const setValue = (field: string) => (event) => {
-    if (field === "amount") {
-      const { value } = event.target;
-      if (/^[+-]?((\.\d*)|(\d*(\.\d*)?))$/.test(value)) {
-        if (!+value[0] && +value.slice(1)) {
+  const setValue =
+    (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      if (field === "amount") {
+        const { value } = event.target;
+        if (/^[+-]?((\.\d*)|(\d*(\.\d*)?))$/.test(value)) {
+          if (!+value[0] && +value.slice(1)) {
+            setTransaction((preState) => ({
+              ...preState,
+              [field]: +value,
+            }));
+            return;
+          }
           setTransaction((preState) => ({
             ...preState,
-            [field]: +value,
+            [field]: value,
           }));
-          return;
         }
-        setTransaction((preState) => ({
-          ...preState,
-          [field]: value,
-        }));
+        return;
       }
-      return;
-    }
-    setTransaction((prevState) => ({
-      ...prevState,
-      [field]: event.target.value,
-    }));
-  };
+      setTransaction((prevState) => ({
+        ...prevState,
+        [field]: event.target.value,
+      }));
+    };
 
   const setLabel = setValue("label");
   const setCategory = setValue("category");
@@ -137,7 +138,7 @@ export const TransactionForm: FC = () => {
           className={classes.select}
         >
           {allCategories.map((item) => (
-            <MenuItem value={item.label} key={item.label}>
+            <MenuItem value={item.id} key={item.label}>
               {item.label}
             </MenuItem>
           ))}

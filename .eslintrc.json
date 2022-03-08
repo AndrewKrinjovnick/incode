@@ -48,6 +48,55 @@
       {
         "endOfLine": "auto"
       }
+    ],
+    "spellcheck/spell-checker": [
+      "warn",
+      {
+        "comments": true,
+        "identifiers": true,
+        "lang": "en_US",
+        "minLength": 3,
+        "skipIfMatch": [
+          // Ignore URLs as values
+          "^httpsS+$",
+          // Other empty elements are added to comply with `array-element-newline` rule's setting:
+          // "minItems": 6
+          // Feel free to remove redundant elements after adding the new rules here
+          "",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "skipWordIfMatch": [
+          // Ignore words, containing non-latin symbols, like: it's
+          "\bw*[^ws]+w*\b",
+          // Ignore numbers with measurement points, like: 70vw
+          "\bd+[a-z%]+\b",
+          // Other empty elements are added to comply with `array-element-newline` rule's setting:
+          // "minItems": 6
+          // Feel free to remove redundant elements after adding the new rules here
+          "",
+          "",
+          "",
+          ""
+        ],
+        "skipWords": [
+          // Add here valid words which are new to spellcheck
+          "autofill",
+          "Incode",
+          "Joi",
+          "jsx",
+          "lang",
+          "len",
+          "mailto",
+          "moz",
+          "pdf",
+          "webkit"
+        ],
+        "strings": true,
+        "templates": true
+      }
     ]
   }
 }

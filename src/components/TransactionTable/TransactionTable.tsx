@@ -23,7 +23,6 @@ const columnsForTransactionTable: GridColDef[] = [
   { field: "label", headerName: "Label", width: 200 },
   { field: "date", headerName: "Date", width: 170 },
   { field: "amount", headerName: "Amount", width: 180 },
-  { field: "category", headerName: "Category", width: 200 },
 ];
 
 const radioBtns = [
@@ -36,6 +35,7 @@ export const TransactionTable: FC = () => {
   const { filteredTransactions } = useAppSelector(
     (state) => state.transactions
   );
+  const { categoriesByID } = useAppSelector((state) => state.categories);
   const dispatch = useDispatch();
   const [radioValue, setRadioValue] = useState<string>(radioBtns[0].value);
 
@@ -65,6 +65,14 @@ export const TransactionTable: FC = () => {
         rows={filteredTransactions}
         columns={[
           ...columnsForTransactionTable,
+          {
+            field: "category",
+            headerName: "Category",
+            width: 200,
+            renderCell: (params: GridRenderCellParams<ID>) => (
+              <span>{categoriesByID[params.value].label}</span>
+            ),
+          },
           {
             field: "archived",
             headerName: "Add to archive",

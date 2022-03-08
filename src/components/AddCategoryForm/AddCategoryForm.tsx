@@ -1,9 +1,10 @@
-import React, { FC, useState } from "react";
+import React, { FC } from "react";
 import { Button, TextField, Typography } from "@mui/material";
 import { createStyles, makeStyles } from "@mui/styles";
-import { v4 as uuidv4 } from "uuid";
+import { v4 as generateID } from "uuid";
 import { useAppDispatch } from "../../hooks";
 import { addCategory } from "../../store/slices/categorySlice";
+import { useInputState } from "../../hooks/useInputState";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -16,26 +17,22 @@ const useStyles = makeStyles(() =>
 
 export const AddCategoryForm: FC = () => {
   const classes = useStyles();
-  const [category, setCategory] = useState<string>("");
+  const [category, setCategoryHandler, setCategory] = useInputState<
+    string,
+    React.ChangeEvent<HTMLInputElement>
+  >("");
   const dispatch = useAppDispatch();
 
-  const addCategoryHandler = (event) => {
+  const addCategoryHandler = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (category.trim() && category.length < 15) {
-      dispatch(addCategory({ id: uuidv4(), label: category }));
-      setCategory("");
-    } else {
-      setCategory("");
+      dispatch(addCategory({ id: generateID(), label: category }));
     }
-  };
-
-  const setСategoryName = (evt: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = evt.target;
-    setCategory(value);
+    setCategory("");
   };
 
   return (
-    <form onSubmit={addCategoryHandler}>
+    <form onSubmit={addCategoryHandler} name="reset">
       <Typography variant="h6" component="h6">
         Categories
       </Typography>
@@ -44,7 +41,7 @@ export const AddCategoryForm: FC = () => {
         variant="outlined"
         className={classes.categoryInput}
         value={category}
-        onChange={setСategoryName}
+        onChange={setCategoryHandler}
       />
       <Button variant="contained" fullWidth type="submit">
         Add category

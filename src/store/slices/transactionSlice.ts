@@ -58,7 +58,7 @@ const transactionSlice = createSlice({
       if (state.allTransactions[0].hasOwnProperty(action.payload)) {
         state.filteredTransactions = state.filteredTransactions.filter(
           (transaction) => {
-            return transaction[action.payload];
+            return transaction[action.payload as keyof ITransaction];
           }
         );
         return;

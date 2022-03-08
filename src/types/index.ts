@@ -14,3 +14,7 @@ export interface ITransaction {
   archived: boolean;
   category: string;
 }
+
+export interface IСategoryIDObject {
+  [id: ID]: boolean;
+}

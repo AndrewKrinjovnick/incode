@@ -6,13 +6,13 @@ import { Box } from "@mui/system";
 import { createStyles, makeStyles } from "@mui/styles";
 import { useAppDispatch } from "../../hooks";
 import { removeCategory } from "../../store/slices/categorySlice";
-import { ICategory } from "../../types";
+import { ICategory, IСategoryIDObject } from "../../types";
 
 interface ICategoryState {
   category: ICategory;
   index: number;
-  openEditForm: (state) => void;
-  defaultOpenValue: object;
+  openEditForm: (state: IСategoryIDObject) => void;
+  defaultOpenValue: IСategoryIDObject;
 }
 
 export const useStyles = makeStyles(() =>

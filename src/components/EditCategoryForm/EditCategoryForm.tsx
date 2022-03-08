@@ -1,15 +1,16 @@
-import React, { FC, useState } from "react";
+import React, { FC } from "react";
 import { Button, TextField } from "@mui/material";
 import { createStyles, makeStyles } from "@mui/styles";
-import { ICategory, nameOfCategory } from "../../types";
+import { ICategory, nameOfCategory, IСategoryIDObject } from "../../types";
 import { updateCategory } from "../../store/slices/categorySlice";
 import { useAppDispatch } from "../../hooks";
 import { updateTransactions } from "../../store/slices/transactionSlice";
+import { useInputState } from "../../hooks/useInputState";
 
-interface IEditCategoryForm {
+interface IEditCategoryFormProps {
   category: ICategory;
-  closeEditForm: (state) => void;
-  defaultOpenValue: object;
+  closeEditForm: (state: IСategoryIDObject) => void;
+  defaultOpenValue: IСategoryIDObject;
 }
 
 const useStyles = makeStyles(() =>
@@ -26,7 +27,7 @@ const useStyles = makeStyles(() =>
   })
 );
 
-export const EditCategoryForm: FC<IEditCategoryForm> = ({
+export const EditCategoryForm: FC<IEditCategoryFormProps> = ({
   category,
   closeEditForm,
   defaultOpenValue,
@@ -34,10 +35,12 @@ export const EditCategoryForm: FC<IEditCategoryForm> = ({
   const dispatch = useAppDispatch();
   const classes = useStyles();
 
-  const [categoryLabel, setCategoryLabel] = useState<nameOfCategory>(
-    category.label
-  );
-  const editCategory = (event) => {
+  const [categoryLabel, setCategoryHandler] = useInputState<
+    nameOfCategory,
+    React.ChangeEvent<HTMLInputElement>
+  >(category.label);
+
+  const editCategory = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (category.label.trim() && category.label.length < 15) {
       dispatch(updateCategory({ ...category, label: categoryLabel }));
@@ -51,11 +54,6 @@ export const EditCategoryForm: FC<IEditCategoryForm> = ({
     }
   };
 
-  const setСategoryName = (evt: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = evt.target;
-    setCategoryLabel(value);
-  };
-
   return (
     <form onSubmit={editCategory} className={classes.container}>
       <TextField
@@ -63,7 +61,7 @@ export const EditCategoryForm: FC<IEditCategoryForm> = ({
         variant="outlined"
         size="small"
         value={categoryLabel}
-        onChange={setСategoryName}
+        onChange={setCategoryHandler}
         autoFocus
       />
       <Button className={classes.btn} variant="contained" type="submit">

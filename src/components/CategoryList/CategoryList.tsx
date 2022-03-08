@@ -3,14 +3,15 @@ import { AddCategoryForm } from "../AddCategoryForm/AddCategoryForm";
 import { Category } from "../Category/Category";
 import { useAppSelector } from "../../hooks";
 import { EditCategoryForm } from "../EditCategoryForm/EditCategoryForm";
+import { IСategoryIDObject } from "../../types";
 
 export const CategoryList: FC = () => {
-  const [initState, setInitState] = useState({});
+  const [initState, setInitState] = useState<IСategoryIDObject>({});
   const { allCategories } = useAppSelector((state) => state.categories);
-  const [isCategoryOpen, setIsCategoryOpen] = useState({});
+  const [isCategoryOpen, setIsCategoryOpen] = useState<IСategoryIDObject>({});
 
   useEffect(() => {
-    const obj = {};
+    const obj: IСategoryIDObject = {};
     allCategories.forEach((category) => {
       obj[category.id] = true;
     });
