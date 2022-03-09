@@ -60,12 +60,12 @@ export const TransactionForm: FC = () => {
         ...defaultState,
         category: allCategories[0].id,
       });
-    } else {
-      setTransaction((preState) => ({
-        ...preState,
-        label: "",
-      }));
+      return;
     }
+    setTransaction((preState) => ({
+      ...preState,
+      label: "",
+    }));
   };
 
   const setValue =

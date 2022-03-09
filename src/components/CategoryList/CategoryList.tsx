@@ -3,7 +3,7 @@ import { AddCategoryForm } from "../AddCategoryForm/AddCategoryForm";
 import { Category } from "../Category/Category";
 import { useAppSelector } from "../../hooks";
 import { EditCategoryForm } from "../EditCategoryForm/EditCategoryForm";
-import { ICategoryIdentifier } from "../../types";
+import { ICategoryIdentifier, ID } from "../../types";
 
 export const CategoryList: FC = () => {
   const [initState, setInitState] = useState<ICategoryIdentifier>({});
@@ -19,6 +19,19 @@ export const CategoryList: FC = () => {
     setIsCategoryOpen(obj);
   }, [allCategories]);
 
+  const onEditButtonClick = (id: ID = "") => {
+    if (id) {
+      setIsCategoryOpen({
+        ...initState,
+        [id]: false,
+      });
+      return;
+    }
+    setIsCategoryOpen({
+      ...initState,
+    });
+  };
+
   return (
     <>
       <AddCategoryForm />
@@ -27,16 +40,14 @@ export const CategoryList: FC = () => {
           <Category
             key={category.label}
             category={category}
-            index={index}
-            openEditForm={(state) => setIsCategoryOpen(state)}
-            defaultOpenValue={initState}
+            disableButtons={!index}
+            onEditButtonClick={() => onEditButtonClick(category.id)}
           />
         ) : (
           <EditCategoryForm
             key={category.label}
             category={category}
-            closeEditForm={(state) => setIsCategoryOpen(state)}
-            defaultOpenValue={initState}
+            onEditButtonClick={() => onEditButtonClick()}
           />
         )
       )}

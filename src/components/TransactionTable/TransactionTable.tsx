@@ -1,14 +1,10 @@
-import { Checkbox, FormControlLabel, Radio, RadioGroup } from "@mui/material";
+import { Button, FormControlLabel, Radio, RadioGroup } from "@mui/material";
 import { createStyles, makeStyles } from "@mui/styles";
-import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
-
+import { DataGrid, GridRenderCellParams } from "@mui/x-data-grid";
 import React, { FC, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useAppSelector } from "../../hooks";
-import {
-  addToArchive,
-  transactionFiltering,
-} from "../../store/slices/transactionSlice";
+import { addToArchive } from "../../store/slices/transactionSlice";
 import { ID } from "../../types";
 
 export const useStyles = makeStyles(() =>
@@ -19,12 +15,6 @@ export const useStyles = makeStyles(() =>
   })
 );
 
-const columnsForTransactionTable: GridColDef[] = [
-  { field: "label", headerName: "Label", width: 200 },
-  { field: "date", headerName: "Date", width: 170 },
-  { field: "amount", headerName: "Amount", width: 180 },
-];
-
 const radioButtons = [
   { value: "all", label: "All" },
   { value: "archived", label: "Archived" },
@@ -32,20 +22,24 @@ const radioButtons = [
 
 export const TransactionTable: FC = () => {
   const classes = useStyles();
-  const { filteredTransactions } = useAppSelector(
-    (state) => state.transactions
-  );
+  const { allTransactions, transactionArchive, transactionsArchiveByID } =
+    useAppSelector((state) => state.transactions);
+  const [isArchive, setIsArchive] = useState(false);
   const { categoriesByID } = useAppSelector((state) => state.categories);
   const dispatch = useDispatch();
   const [radioValue, setRadioValue] = useState<string>(radioButtons[0].value);
 
-  const handleChange = (id: ID) => {
+  const onAddToArchive = (id: ID) => {
     dispatch(addToArchive(id));
   };
 
   const handleRadio = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRadioValue(event.target.value);
-    dispatch(transactionFiltering(event.target.value));
+    if (event.target.value === "archived") {
+      setIsArchive(true);
+      return;
+    }
+    setIsArchive(false);
   };
 
   return (
@@ -62,9 +56,11 @@ export const TransactionTable: FC = () => {
       </RadioGroup>
       <DataGrid
         className={classes.table}
-        rows={filteredTransactions}
+        rows={isArchive ? transactionArchive : allTransactions}
         columns={[
-          ...columnsForTransactionTable,
+          { field: "label", headerName: "Label", width: 200 },
+          { field: "date", headerName: "Date", width: 170 },
+          { field: "amount", headerName: "Amount", width: 180 },
           {
             field: "category",
             headerName: "Category",
@@ -74,16 +70,18 @@ export const TransactionTable: FC = () => {
             ),
           },
           {
-            field: "archived",
+            field: "id",
             headerName: "Add to archive",
             width: 150,
-            renderCell: (params: GridRenderCellParams<boolean>) => {
+            renderCell: (params: GridRenderCellParams<string>) => {
               return (
-                <Checkbox
-                  checked={params.value}
-                  onChange={() => handleChange(params.row.id)}
-                  inputProps={{ "aria-label": "controlled" }}
-                />
+                <Button
+                  variant="contained"
+                  onClick={() => onAddToArchive(params.value)}
+                  disabled={!!transactionsArchiveByID[params.value]}
+                >
+                  archive
+                </Button>
               );
             },
           },

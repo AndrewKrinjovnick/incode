@@ -1,10 +1,10 @@
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import { Button, TextField, Typography } from "@mui/material";
 import { createStyles, makeStyles } from "@mui/styles";
 import { v4 as generateID } from "uuid";
 import { useAppDispatch } from "../../hooks";
 import { addCategory } from "../../store/slices/categorySlice";
-import { useInputState } from "../../hooks/useInputState";
+import { nameOfCategory } from "../../types";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -20,10 +20,12 @@ const useStyles = makeStyles(() =>
 
 export const AddCategoryForm: FC = () => {
   const classes = useStyles();
-  const [category, setCategoryHandler, setCategory] = useInputState<
-    string,
-    React.ChangeEvent<HTMLInputElement>
-  >("");
+  const [category, setCategory] = useState<nameOfCategory>("");
+
+  const setInputValue = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCategory(event.target.value);
+  };
+
   const dispatch = useAppDispatch();
 
   const addCategoryHandler = (event: React.FormEvent<HTMLFormElement>) => {
@@ -44,7 +46,7 @@ export const AddCategoryForm: FC = () => {
         variant="outlined"
         className={classes.categoryInput}
         value={category}
-        onChange={setCategoryHandler}
+        onChange={setInputValue}
       />
       <Button variant="contained" fullWidth type="submit">
         Add category

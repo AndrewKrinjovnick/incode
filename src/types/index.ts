@@ -12,7 +12,7 @@ export interface ITransaction {
   date: string;
   amount: number | string;
   archived: boolean;
-  category: string;
+  category: ID;
 }
 
 export interface ICategoryIdentifier {

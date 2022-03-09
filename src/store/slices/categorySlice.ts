@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { v4 as uuidv4 } from "uuid";
+import { v4 as generateID } from "uuid";
 import { ICategory, ID } from "../../types";
 
 export interface ICategoriesByID {
@@ -11,13 +11,13 @@ export interface ITransactionState {
   categoriesByID: ICategoriesByID;
 }
 
-const initCategoies = ["Other", "Salary", "Gifts"];
+const initCategories = ["Other", "Salary", "Gifts"];
 
 const categoriesByID: ICategoriesByID = {};
 
 const initialState: ITransactionState = {
-  allCategories: initCategoies.map((category) => {
-    const ID = uuidv4();
+  allCategories: initCategories.map((category) => {
+    const ID = generateID();
     const newCategory = {
       id: ID,
       label: category,

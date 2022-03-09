@@ -1,16 +1,13 @@
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import { Button, TextField } from "@mui/material";
 import { createStyles, makeStyles } from "@mui/styles";
-import { ICategory, nameOfCategory, ICategoryIdentifier } from "../../types";
+import { ICategory, nameOfCategory } from "../../types";
 import { updateCategory } from "../../store/slices/categorySlice";
 import { useAppDispatch } from "../../hooks";
-import { updateTransactions } from "../../store/slices/transactionSlice";
-import { useInputState } from "../../hooks/useInputState";
 
 interface IEditCategoryFormProps {
   category: ICategory;
-  closeEditForm: (state: ICategoryIdentifier) => void;
-  defaultOpenValue: ICategoryIdentifier;
+  onEditButtonClick: () => void;
 }
 
 const useStyles = makeStyles(() =>
@@ -19,7 +16,9 @@ const useStyles = makeStyles(() =>
       display: "flex",
       justifyContent: "space-between",
       height: "50px",
-      padding: "10px 0",
+      padding: "10px 5px",
+      width: "100%",
+      maxWidth: "250px",
     },
     btn: {
       height: "40px",
@@ -29,29 +28,25 @@ const useStyles = makeStyles(() =>
 
 export const EditCategoryForm: FC<IEditCategoryFormProps> = ({
   category,
-  closeEditForm,
-  defaultOpenValue,
+  onEditButtonClick,
 }) => {
   const dispatch = useAppDispatch();
   const classes = useStyles();
 
-  const [categoryLabel, setCategoryHandler] = useInputState<
-    nameOfCategory,
-    React.ChangeEvent<HTMLInputElement>
-  >(category.label);
+  const [categoryLabel, setCategoryLabel] = useState<nameOfCategory>(
+    category.label
+  );
+
+  const setInputValue = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCategoryLabel(event.target.value);
+  };
 
   const editCategory = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (category.label.trim() && category.label.length < 15) {
       dispatch(updateCategory({ ...category, label: categoryLabel }));
-      dispatch(
-        updateTransactions({
-          nameBefore: category.label,
-          nameAfter: categoryLabel,
-        })
-      );
-      closeEditForm(defaultOpenValue);
     }
+    onEditButtonClick();
   };
 
   return (
@@ -61,7 +56,7 @@ export const EditCategoryForm: FC<IEditCategoryFormProps> = ({
         variant="outlined"
         size="small"
         value={categoryLabel}
-        onChange={setCategoryHandler}
+        onChange={setInputValue}
         autoFocus
       />
       <Button className={classes.btn} variant="contained" type="submit">

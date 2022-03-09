@@ -1,9 +1,11 @@
 import { Provider } from "react-redux";
 import { addDecorator } from '@storybook/react';
 import store from "../src/store";
+import { CssBaseline } from "@mui/material";
 
 addDecorator((story) => (
   <Provider store={store}>
+    <CssBaseline />
     {story()}
   </Provider>
 ));

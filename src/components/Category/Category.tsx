@@ -6,13 +6,12 @@ import { Box } from "@mui/system";
 import { createStyles, makeStyles } from "@mui/styles";
 import { useAppDispatch } from "../../hooks";
 import { removeCategory } from "../../store/slices/categorySlice";
-import { ICategory, ICategoryIdentifier } from "../../types";
+import { ICategory } from "../../types";
 
 export interface ICategoryProps {
   category: ICategory;
-  index: number;
-  openEditForm: (state: ICategoryIdentifier) => void;
-  defaultOpenValue: ICategoryIdentifier;
+  disableButtons: boolean;
+  onEditButtonClick: () => void;
 }
 
 export const useStyles = makeStyles(() =>
@@ -30,38 +29,29 @@ export const useStyles = makeStyles(() =>
 
 export const Category: FC<ICategoryProps> = ({
   category,
-  index,
-  openEditForm,
-  defaultOpenValue,
+  disableButtons,
+  onEditButtonClick,
 }) => {
   const classes = useStyles();
   const dispatch = useAppDispatch();
   const deleteCategory = (category: ICategory) => {
     dispatch(removeCategory(category.id));
   };
-
-  const openOrCloseEditForm = () => {
-    openEditForm({
-      ...defaultOpenValue,
-      [category.id]: false,
-    });
-  };
-
   return (
     <Box className={classes.container}>
       <Typography>{category.label}</Typography>
       <Box>
         <IconButton
           aria-label="edit"
-          onClick={openOrCloseEditForm}
-          disabled={!index}
+          onClick={onEditButtonClick}
+          disabled={disableButtons}
         >
           <EditIcon />
         </IconButton>
         <IconButton
           aria-label="delete"
           onClick={() => deleteCategory(category)}
-          disabled={!index}
+          disabled={disableButtons}
         >
           <DeleteIcon />
         </IconButton>

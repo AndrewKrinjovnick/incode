@@ -33,16 +33,14 @@ export const Disable = Template.bind({});
 
 Disable.args = {
   category: { id: "1233452", label: "Disable" },
-  index: 0,
-  openEditForm: () => 1,
-  defaultOpenValue: { id: true },
+  onEditButtonClick: () => 1,
+  disableButtons: false,
 };
 
 export const Active = Template.bind({});
 
 Active.args = {
   category: { id: "123452", label: "Active" },
-  index: 1,
-  openEditForm: () => 1,
-  defaultOpenValue: { id: true },
+  onEditButtonClick: () => 1,
+  disableButtons: true,
 };
