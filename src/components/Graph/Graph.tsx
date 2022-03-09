@@ -14,7 +14,7 @@ interface IObjCategories {
 export const Graph: FC = () => {
   const { allTransactions } = useAppSelector((state) => state.transactions);
   const { categoriesByID } = useAppSelector((state) => state.categories);
-  const [amounts, setAmounst] = useState<number[]>([]);
+  const [amounts, setAmounts] = useState<number[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [colors, setColors] = useState<string[]>([]);
 
@@ -40,7 +40,7 @@ export const Graph: FC = () => {
     }
 
     setCategories(arrCategories);
-    setAmounst(arrAmounts);
+    setAmounts(arrAmounts);
     setColors(arrColors);
   }, [allTransactions]);
 

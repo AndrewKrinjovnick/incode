@@ -25,7 +25,7 @@ const columnsForTransactionTable: GridColDef[] = [
   { field: "amount", headerName: "Amount", width: 180 },
 ];
 
-const radioBtns = [
+const radioButtons = [
   { value: "all", label: "All" },
   { value: "archived", label: "Archived" },
 ];
@@ -37,21 +37,21 @@ export const TransactionTable: FC = () => {
   );
   const { categoriesByID } = useAppSelector((state) => state.categories);
   const dispatch = useDispatch();
-  const [radioValue, setRadioValue] = useState<string>(radioBtns[0].value);
+  const [radioValue, setRadioValue] = useState<string>(radioButtons[0].value);
 
   const handleChange = (id: ID) => {
     dispatch(addToArchive(id));
   };
 
-  const hableRadio = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleRadio = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRadioValue(event.target.value);
     dispatch(transactionFiltering(event.target.value));
   };
 
   return (
     <>
-      <RadioGroup onChange={hableRadio} value={radioValue} row>
-        {radioBtns.map((radioBtn) => (
+      <RadioGroup onChange={handleRadio} value={radioValue} row>
+        {radioButtons.map((radioBtn) => (
           <FormControlLabel
             key={radioBtn.label}
             value={radioBtn.value}

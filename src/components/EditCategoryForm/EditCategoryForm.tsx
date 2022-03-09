@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 import { Button, TextField } from "@mui/material";
 import { createStyles, makeStyles } from "@mui/styles";
-import { ICategory, nameOfCategory, IСategoryIDObject } from "../../types";
+import { ICategory, nameOfCategory, ICategoryIdentifier } from "../../types";
 import { updateCategory } from "../../store/slices/categorySlice";
 import { useAppDispatch } from "../../hooks";
 import { updateTransactions } from "../../store/slices/transactionSlice";
@@ -9,8 +9,8 @@ import { useInputState } from "../../hooks/useInputState";
 
 interface IEditCategoryFormProps {
   category: ICategory;
-  closeEditForm: (state: IСategoryIDObject) => void;
-  defaultOpenValue: IСategoryIDObject;
+  closeEditForm: (state: ICategoryIdentifier) => void;
+  defaultOpenValue: ICategoryIdentifier;
 }
 
 const useStyles = makeStyles(() =>

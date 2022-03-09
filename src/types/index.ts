@@ -15,6 +15,6 @@ export interface ITransaction {
   category: string;
 }
 
-export interface IСategoryIDObject {
+export interface ICategoryIdentifier {
   [id: ID]: boolean;
 }

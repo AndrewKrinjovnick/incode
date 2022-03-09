@@ -6,13 +6,13 @@ import { BrowserRouter } from "react-router-dom";
 import { AppRouter } from "./layouts/AppRouter/AppRouter";
 import { ErrorBoundary } from "./layouts/ErrorBoundary/ErrorBoundary";
 import { MainHeader } from "./components/MainHeader/MainHeader";
-import store, { persistor } from "./store";
+import store, { persist } from "./store";
 
 function App() {
   return (
     <ErrorBoundary>
       <Provider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
+        <PersistGate loading={null} persistor={persist}>
           <BrowserRouter>
             <CssBaseline />
             <MainHeader />

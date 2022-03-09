@@ -8,6 +8,9 @@ import { useInputState } from "../../hooks/useInputState";
 
 const useStyles = makeStyles(() =>
   createStyles({
+    container: {
+      maxWidth: "250px",
+    },
     categoryInput: {
       width: "100%",
       margin: "5px 0 10px!important",
@@ -32,7 +35,7 @@ export const AddCategoryForm: FC = () => {
   };
 
   return (
-    <form onSubmit={addCategoryHandler} name="reset">
+    <form onSubmit={addCategoryHandler} className={classes.container}>
       <Typography variant="h6" component="h6">
         Categories
       </Typography>

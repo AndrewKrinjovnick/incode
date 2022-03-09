@@ -6,13 +6,13 @@ import { Box } from "@mui/system";
 import { createStyles, makeStyles } from "@mui/styles";
 import { useAppDispatch } from "../../hooks";
 import { removeCategory } from "../../store/slices/categorySlice";
-import { ICategory, IСategoryIDObject } from "../../types";
+import { ICategory, ICategoryIdentifier } from "../../types";
 
-interface ICategoryState {
+export interface ICategoryProps {
   category: ICategory;
   index: number;
-  openEditForm: (state: IСategoryIDObject) => void;
-  defaultOpenValue: IСategoryIDObject;
+  openEditForm: (state: ICategoryIdentifier) => void;
+  defaultOpenValue: ICategoryIdentifier;
 }
 
 export const useStyles = makeStyles(() =>
@@ -23,11 +23,12 @@ export const useStyles = makeStyles(() =>
       alignItems: "center",
       width: "100%",
       padding: "10px 10px 0",
+      maxWidth: "250px",
     },
   })
 );
 
-export const Category: FC<ICategoryState> = ({
+export const Category: FC<ICategoryProps> = ({
   category,
   index,
   openEditForm,
