@@ -9,18 +9,18 @@ export default {
     category: {
       description: "Category, includes ID and title",
     },
-    index: {
-      description: "Category number(1 item closed for editing)",
-      options: [0, 1],
+    disableButtons: {
+      description: "Is the category close for editing",
+      options: [true, false],
       control: {
         type: "radio",
       },
     },
-    openEditForm: {
+    onEditButtonClick: {
       description: "Function that opens the edit form",
     },
-    defaultOpenValue: {
-      description: "Initial state of the category (open)",
+    onDeleteButtonClick: {
+      description: "Category removal handler",
     },
   },
 } as ComponentMeta<typeof Category>;
@@ -34,7 +34,8 @@ export const Disable = Template.bind({});
 Disable.args = {
   category: { id: "1233452", label: "Disable" },
   onEditButtonClick: () => 1,
-  disableButtons: false,
+  disableButtons: true,
+  onDeleteButtonClick: () => 1,
 };
 
 export const Active = Template.bind({});
@@ -42,5 +43,6 @@ export const Active = Template.bind({});
 Active.args = {
   category: { id: "123452", label: "Active" },
   onEditButtonClick: () => 1,
-  disableButtons: true,
+  disableButtons: false,
+  onDeleteButtonClick: () => 1,
 };

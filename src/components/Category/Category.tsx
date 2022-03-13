@@ -4,14 +4,13 @@ import EditIcon from "@mui/icons-material/Edit";
 import { IconButton, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { createStyles, makeStyles } from "@mui/styles";
-import { useAppDispatch } from "../../hooks";
-import { removeCategory } from "../../store/slices/categorySlice";
 import { ICategory } from "../../types";
 
 export interface ICategoryProps {
   category: ICategory;
   disableButtons: boolean;
   onEditButtonClick: () => void;
+  onDeleteButtonClick: () => void;
 }
 
 export const useStyles = makeStyles(() =>
@@ -31,12 +30,10 @@ export const Category: FC<ICategoryProps> = ({
   category,
   disableButtons,
   onEditButtonClick,
+  onDeleteButtonClick,
 }) => {
   const classes = useStyles();
-  const dispatch = useAppDispatch();
-  const deleteCategory = (category: ICategory) => {
-    dispatch(removeCategory(category.id));
-  };
+
   return (
     <Box className={classes.container}>
       <Typography>{category.label}</Typography>
@@ -50,7 +47,7 @@ export const Category: FC<ICategoryProps> = ({
         </IconButton>
         <IconButton
           aria-label="delete"
-          onClick={() => deleteCategory(category)}
+          onClick={onDeleteButtonClick}
           disabled={disableButtons}
         >
           <DeleteIcon />

@@ -1,20 +1,22 @@
 export type ID = string;
-export type nameOfCategory = string;
 
 export interface ICategory {
   id: ID;
-  label: nameOfCategory;
+  label: string;
 }
 
 export interface ITransaction {
   id: ID;
   label: string;
-  date: string;
+  date: string | Date;
   amount: number | string;
-  archived: boolean;
   category: ID;
 }
 
 export interface ICategoryIdentifier {
   [id: ID]: boolean;
+}
+
+export interface IEditCategoryFormInputProps {
+  label: string;
 }

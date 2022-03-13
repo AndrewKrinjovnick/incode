@@ -1,10 +1,14 @@
 import { Button, FormControlLabel, Radio, RadioGroup } from "@mui/material";
 import { createStyles, makeStyles } from "@mui/styles";
+import moment from "moment";
 import { DataGrid, GridRenderCellParams } from "@mui/x-data-grid";
 import React, { FC, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useAppSelector } from "../../hooks";
-import { addToArchive } from "../../store/slices/transactionSlice";
+import {
+  addToArchive,
+  returnFromArchive,
+} from "../../store/slices/transactionSlice";
 import { ID } from "../../types";
 
 export const useStyles = makeStyles(() =>
@@ -29,8 +33,16 @@ export const TransactionTable: FC = () => {
   const dispatch = useDispatch();
   const [radioValue, setRadioValue] = useState<string>(radioButtons[0].value);
 
-  const onAddToArchive = (id: ID) => {
-    dispatch(addToArchive(id));
+  const onAddToArchive = (
+    event: React.MouseEvent<HTMLButtonElement>,
+    id: ID
+  ) => {
+    event.stopPropagation();
+    if (!transactionsArchiveByID[id]) {
+      dispatch(addToArchive(id));
+      return;
+    }
+    dispatch(returnFromArchive(id));
   };
 
   const handleRadio = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,7 +71,14 @@ export const TransactionTable: FC = () => {
         rows={isArchive ? transactionArchive : allTransactions}
         columns={[
           { field: "label", headerName: "Label", width: 200 },
-          { field: "date", headerName: "Date", width: 170 },
+          {
+            field: "date",
+            headerName: "Date",
+            width: 170,
+            renderCell: (params: GridRenderCellParams<Date | string>) => (
+              <span>{moment(params.value).format("YYYY-MM-DD")}</span>
+            ),
+          },
           { field: "amount", headerName: "Amount", width: 180 },
           {
             field: "category",
@@ -71,19 +90,16 @@ export const TransactionTable: FC = () => {
           },
           {
             field: "id",
-            headerName: "Add to archive",
+            headerName: isArchive ? "Add to Shared" : "Add to archive",
             width: 150,
-            renderCell: (params: GridRenderCellParams<string>) => {
-              return (
-                <Button
-                  variant="contained"
-                  onClick={() => onAddToArchive(params.value)}
-                  disabled={!!transactionsArchiveByID[params.value]}
-                >
-                  archive
-                </Button>
-              );
-            },
+            renderCell: (params: GridRenderCellParams<string>) => (
+              <Button
+                variant="contained"
+                onClick={(event) => onAddToArchive(event, params.value)}
+              >
+                {isArchive ? "return" : "archive"}
+              </Button>
+            ),
           },
         ]}
         pageSize={5}

@@ -42,7 +42,7 @@ export const Graph: FC = () => {
     setCategories(arrCategories);
     setAmounts(arrAmounts);
     setColors(arrColors);
-  }, [allTransactions]);
+  }, [allTransactions, categoriesByID]);
 
   if (!allTransactions.length) {
     return <Typography variant="h5">No data</Typography>;
@@ -57,7 +57,7 @@ export const Graph: FC = () => {
             data: amounts,
             backgroundColor: colors,
             barPercentage: 1,
-            categoryPercentage: 0.3,
+            categoryPercentage: 0.1,
           },
         ],
       }}

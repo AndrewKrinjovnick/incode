@@ -90,7 +90,11 @@
           "mailto",
           "moz",
           "pdf",
-          "webkit"
+          "webkit",
+          "registerables",
+          "datasets",
+          "serializable",
+          "persistor"
         ],
         "strings": true,
         "templates": true

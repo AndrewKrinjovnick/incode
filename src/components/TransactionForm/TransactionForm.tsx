@@ -1,11 +1,13 @@
-import React, { FC, useState } from "react";
+import React, { FC } from "react";
 import { Button, TextField, Typography, MenuItem } from "@mui/material";
 import { v4 as generateID } from "uuid";
 import { Box } from "@mui/system";
 import { createStyles, makeStyles } from "@mui/styles";
-import { ITransaction } from "../../types";
+import { useForm } from "react-hook-form";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { addTransaction } from "../../store/slices/transactionSlice";
+import { ErrorMessage } from "../ErrorText/ErrorText";
+import { fieldValidation } from "../../models/validationSchema";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -15,6 +17,7 @@ const useStyles = makeStyles(() =>
     container: {
       display: "flex",
       justifyContent: "space-between",
+      alignItems: "start",
       width: "100%",
       padding: "5px 0 10px",
     },
@@ -23,119 +26,97 @@ const useStyles = makeStyles(() =>
     },
     btn: {
       width: "100px",
+      height: "56px",
     },
   })
 );
 
+interface ITransactionFormInputProps {
+  label: string;
+  date: string;
+  amount: string;
+  category: string;
+}
+
 const date = new Date().toISOString().slice(0, 10);
-const defaultState = {
-  id: "",
-  label: "",
-  archived: false,
-  date,
-  amount: "",
-};
 
 export const TransactionForm: FC = () => {
   const classes = useStyles();
   const dispatch = useAppDispatch();
   const { allCategories } = useAppSelector((state) => state.categories);
+  const {
+    register,
+    formState: { errors, isValid },
+    handleSubmit,
+    reset,
+  } = useForm<ITransactionFormInputProps>({ mode: "onChange" });
 
-  const [transaction, setTransaction] = useState<ITransaction>({
-    ...defaultState,
-    category: allCategories[0].id,
-  });
-
-  const addNewTransaction = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (transaction.label.trim() && transaction.label.length < 20) {
-      dispatch(
-        addTransaction({
-          ...transaction,
-          amount: !+transaction.amount ? 0 : +transaction.amount,
-          id: generateID(),
-        })
-      );
-      setTransaction({
-        ...defaultState,
-        category: allCategories[0].id,
-      });
-      return;
-    }
-    setTransaction((preState) => ({
-      ...preState,
-      label: "",
-    }));
+  const addNewTransaction = (data: ITransactionFormInputProps) => {
+    dispatch(
+      addTransaction({
+        id: generateID(),
+        ...data,
+        amount: +data.amount,
+      })
+    );
+    reset();
   };
 
-  const setValue =
-    (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
-      if (field === "amount") {
-        const { value } = event.target;
-        if (/^[+-]?((\.\d*)|(\d*(\.\d*)?))$/.test(value)) {
-          if (!+value[0] && +value.slice(1)) {
-            setTransaction((preState) => ({
-              ...preState,
-              [field]: +value,
-            }));
-            return;
-          }
-          setTransaction((preState) => ({
-            ...preState,
-            [field]: value,
-          }));
-        }
-        return;
-      }
-      setTransaction((prevState) => ({
-        ...prevState,
-        [field]: event.target.value,
-      }));
-    };
-
-  const setLabel = setValue("label");
-  const setCategory = setValue("category");
-  const setDate = setValue("date");
-  const setAmount = setValue("amount");
-
   return (
-    <form className={classes.formWrapper} onSubmit={addNewTransaction}>
+    <form
+      className={classes.formWrapper}
+      onSubmit={handleSubmit(addNewTransaction)}
+    >
       <Typography variant="h6" component="h6">
         New transaction
       </Typography>
       <Box margin="normal" className={classes.container}>
-        <TextField
-          label="Label"
-          variant="outlined"
-          value={transaction.label}
-          onChange={setLabel}
-        />
-        <TextField
-          label="Date"
-          type="date"
-          InputLabelProps={{
-            shrink: true,
-          }}
-          value={transaction.date}
-          onChange={setDate}
-        />
-        <TextField
-          variant="outlined"
-          label="Amount"
-          type="text"
-          placeholder="0"
-          inputProps={{
-            inputMode: "numeric",
-          }}
-          value={transaction.amount}
-          onChange={setAmount}
-        />
+        <Box>
+          <TextField
+            label="Label"
+            variant="outlined"
+            {...register("label", fieldValidation.labelInput)}
+          />
+          {errors?.label && (
+            <ErrorMessage message={errors?.label?.message || "Error"} />
+          )}
+        </Box>
+        <Box>
+          <TextField
+            label="Date"
+            type="date"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            defaultValue={date}
+            {...register("date", fieldValidation.dateInput)}
+          />
+          {errors?.date && (
+            <ErrorMessage message={errors?.date?.message || "Error"} />
+          )}
+        </Box>
+        <Box>
+          <TextField
+            variant="outlined"
+            label="Amount"
+            defaultValue=""
+            placeholder="0"
+            type="number"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            {...register("amount", fieldValidation.numberInput)}
+          />
+          {errors?.amount && (
+            <ErrorMessage message={errors?.amount?.message || "Error"} />
+          )}
+        </Box>
         <TextField
           label="Category"
           select
-          value={transaction.category}
-          onChange={setCategory}
           className={classes.select}
+          defaultValue={allCategories[0].id}
+          {...register("category")}
         >
           {allCategories.map((item) => (
             <MenuItem value={item.id} key={item.label}>
@@ -143,7 +124,12 @@ export const TransactionForm: FC = () => {
             </MenuItem>
           ))}
         </TextField>
-        <Button variant="contained" type="submit" className={classes.btn}>
+        <Button
+          className={classes.btn}
+          type="submit"
+          variant="contained"
+          disabled={!isValid}
+        >
           Add
         </Button>
       </Box>

@@ -1,13 +1,14 @@
-import React, { FC, useState } from "react";
-import { Button, TextField } from "@mui/material";
+import React, { FC } from "react";
+import { Box, Button, TextField } from "@mui/material";
 import { createStyles, makeStyles } from "@mui/styles";
-import { ICategory, nameOfCategory } from "../../types";
-import { updateCategory } from "../../store/slices/categorySlice";
-import { useAppDispatch } from "../../hooks";
+import { useForm } from "react-hook-form";
+import { ICategory, IEditCategoryFormInputProps } from "../../types";
+import { fieldValidation } from "../../models/validationSchema";
+import { ErrorMessage } from "../ErrorText/ErrorText";
 
 interface IEditCategoryFormProps {
   category: ICategory;
-  onEditButtonClick: () => void;
+  onEditFormSubmit: (data: IEditCategoryFormInputProps) => void;
 }
 
 const useStyles = makeStyles(() =>
@@ -28,40 +29,39 @@ const useStyles = makeStyles(() =>
 
 export const EditCategoryForm: FC<IEditCategoryFormProps> = ({
   category,
-  onEditButtonClick,
+  onEditFormSubmit,
 }) => {
-  const dispatch = useAppDispatch();
   const classes = useStyles();
 
-  const [categoryLabel, setCategoryLabel] = useState<nameOfCategory>(
-    category.label
-  );
-
-  const setInputValue = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setCategoryLabel(event.target.value);
-  };
-
-  const editCategory = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (category.label.trim() && category.label.length < 15) {
-      dispatch(updateCategory({ ...category, label: categoryLabel }));
-    }
-    onEditButtonClick();
-  };
+  const {
+    register,
+    formState: { errors, isValid },
+    handleSubmit,
+  } = useForm<IEditCategoryFormInputProps>({ mode: "onChange" });
 
   return (
-    <form onSubmit={editCategory} className={classes.container}>
-      <TextField
-        label="Label"
-        variant="outlined"
-        size="small"
-        value={categoryLabel}
-        onChange={setInputValue}
-        autoFocus
-      />
-      <Button className={classes.btn} variant="contained" type="submit">
-        Edit
-      </Button>
+    <form onSubmit={handleSubmit(onEditFormSubmit)}>
+      <Box className={classes.container}>
+        <TextField
+          label="Label"
+          variant="outlined"
+          size="small"
+          defaultValue={category.label}
+          {...register("label", fieldValidation.labelInput)}
+          autoFocus
+        />
+        <Button
+          className={classes.btn}
+          variant="contained"
+          type="submit"
+          disabled={!isValid}
+        >
+          Edit
+        </Button>
+      </Box>
+      {errors?.label && (
+        <ErrorMessage message={errors?.label?.message || "Error"} />
+      )}
     </form>
   );
 };

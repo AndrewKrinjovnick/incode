@@ -1,10 +1,12 @@
-import React, { FC, useState } from "react";
+import React, { FC } from "react";
 import { Button, TextField, Typography } from "@mui/material";
 import { createStyles, makeStyles } from "@mui/styles";
 import { v4 as generateID } from "uuid";
+import { useForm } from "react-hook-form";
 import { useAppDispatch } from "../../hooks";
 import { addCategory } from "../../store/slices/categorySlice";
-import { nameOfCategory } from "../../types";
+import { fieldValidation } from "../../models/validationSchema";
+import { ErrorMessage } from "../ErrorText/ErrorText";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -13,42 +15,59 @@ const useStyles = makeStyles(() =>
     },
     categoryInput: {
       width: "100%",
-      margin: "5px 0 10px!important",
+      marginTop: "5px!important",
+    },
+    button: {
+      marginTop: "10px!important",
     },
   })
 );
 
+interface IAddCategoryFormInputProps {
+  category: string;
+}
+
 export const AddCategoryForm: FC = () => {
   const classes = useStyles();
-  const [category, setCategory] = useState<nameOfCategory>("");
 
-  const setInputValue = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setCategory(event.target.value);
-  };
+  const {
+    register,
+    formState: { errors, isValid },
+    handleSubmit,
+    reset,
+  } = useForm<IAddCategoryFormInputProps>({ mode: "onChange" });
 
   const dispatch = useAppDispatch();
 
-  const addCategoryHandler = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (category.trim() && category.length < 15) {
-      dispatch(addCategory({ id: generateID(), label: category }));
-    }
-    setCategory("");
+  const addCategoryHandler = (data: IAddCategoryFormInputProps) => {
+    dispatch(addCategory({ id: generateID(), label: data.category }));
+    reset();
   };
 
   return (
-    <form onSubmit={addCategoryHandler} className={classes.container}>
+    <form
+      onSubmit={handleSubmit(addCategoryHandler)}
+      className={classes.container}
+    >
       <Typography variant="h6" component="h6">
         Categories
       </Typography>
       <TextField
+        className={classes.categoryInput}
         label="Category"
         variant="outlined"
-        className={classes.categoryInput}
-        value={category}
-        onChange={setInputValue}
+        {...register("category", fieldValidation.labelInput)}
       />
-      <Button variant="contained" fullWidth type="submit">
+      {errors?.category && (
+        <ErrorMessage message={errors?.category?.message || "Error"} />
+      )}
+      <Button
+        className={classes.button}
+        variant="contained"
+        fullWidth
+        type="submit"
+        disabled={!isValid}
+      >
         Add category
       </Button>
     </form>
