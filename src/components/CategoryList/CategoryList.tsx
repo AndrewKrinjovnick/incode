@@ -3,11 +3,7 @@ import { AddCategoryForm } from "../AddCategoryForm/AddCategoryForm";
 import { Category } from "../Category/Category";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { EditCategoryForm } from "../EditCategoryForm/EditCategoryForm";
-import {
-  ICategoryIdentifier,
-  ID,
-  IEditCategoryFormInputProps,
-} from "../../types";
+import { ID, IEditCategoryFormInputProps } from "../../types";
 import {
   removeCategory,
   updateCategory,
@@ -15,7 +11,7 @@ import {
 
 export const CategoryList: FC = () => {
   const { allCategories } = useAppSelector((state) => state.categories);
-  const [isCategoryOpen, setIsCategoryOpen] = useState<ICategoryIdentifier>({});
+  const [isCategoryOpen, setIsCategoryOpen] = useState<ID | null>(null);
 
   const dispatch = useAppDispatch();
 
@@ -29,9 +25,7 @@ export const CategoryList: FC = () => {
 
   const onEditButtonClick = useCallback(
     (id: ID) => () => {
-      setIsCategoryOpen({
-        [id]: true,
-      });
+      setIsCategoryOpen(id);
     },
     [setIsCategoryOpen]
   );
@@ -39,7 +33,7 @@ export const CategoryList: FC = () => {
   const onEditFormSubmit = useCallback(
     (id: ID) => (data: IEditCategoryFormInputProps) => {
       dispatch(updateCategory({ id, label: data.label }));
-      setIsCategoryOpen({});
+      setIsCategoryOpen(null);
     },
     [dispatch]
   );
@@ -48,7 +42,7 @@ export const CategoryList: FC = () => {
     <>
       <AddCategoryForm />
       {allCategories.map((category, index) =>
-        !isCategoryOpen[category?.id] ? (
+        category.id !== isCategoryOpen ? (
           <Category
             key={category.label}
             category={category}

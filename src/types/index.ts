@@ -13,10 +13,6 @@ export interface ITransaction {
   category: ID;
 }
 
-export interface ICategoryIdentifier {
-  [id: ID]: boolean;
-}
-
 export interface IEditCategoryFormInputProps {
   label: string;
 }

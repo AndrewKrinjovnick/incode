@@ -57,15 +57,13 @@ export const Graph: FC = () => {
             data: amounts,
             backgroundColor: colors,
             barPercentage: 1,
-            categoryPercentage: 0.1,
+            categoryPercentage: 0.3,
           },
         ],
       }}
-      width={1200}
-      height={600}
       options={{
-        maintainAspectRatio: false,
-        responsive: false,
+        maintainAspectRatio: true,
+        responsive: true,
         plugins: {
           legend: {
             display: false,
